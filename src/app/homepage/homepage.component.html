@@ -1,18 +1,27 @@
 <div class="container">
     <div class="search-bar">
-      <input type="text" placeholder="Departure">
-      <button (click)="mapComponent.locateUser()">Locate Me</button>
-      <input type="text" placeholder="Destination">
-      <button (click)="mapComponent.enableUserPointing()">On map</button>
+        <input type="text" placeholder="Departure" id="departureInput" [(ngModel)]="departurePoint" (input)="searchDparture(departurePoint)">
+        <button (click)="mapComponent.locateUser()">Locate Me</button>
+        <ul *ngIf="departureResults.length > 0">
+          <li *ngFor="let result of departureResults" (click)="selectDeparture(result)">
+              {{ result.display_name }} <!-- Display the location name -->
+          </li>
+        </ul>
+
+        <input type="text" placeholder="Destination" id="destinationInput" [(ngModel)]="destinationPoint" (input)="searchDestination(destinationPoint)">
+        <button (click)="mapComponent.enableUserPointing()">Select on map</button>
+        <ul *ngIf="destinationResults.length > 0">
+          <li *ngFor="let result of destinationResults" (click)="selectDestination(result)">
+              {{ result.display_name }} 
+          </li>
+        </ul>
     </div>
-  
+
     <div class="map-container">
-      <!-- Placeholder for the map -->
-       <app-map></app-map>
+        <app-map (departureSelected)="onLocationFound($event)" (destinationSelected)="onDestinationFound($event)" ></app-map>
     </div>
-  
+
     <div class="results">
-      <!-- Placeholder for results -->
-      <p>Results will go here</p>
+        <p>Results will go here</p>
     </div>
-  </div>
+</div>

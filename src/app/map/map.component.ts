@@ -10,11 +10,12 @@ import 'leaflet/dist/leaflet.css';
   styleUrl: './map.component.css'
 })
 export class MapComponent implements OnInit, AfterViewInit {
-  private map!: L.Map; // Use the ! assertion operator only if you are absolutely sure it will be initialized
+  public map!: L.Map; // Use the ! assertion operator only if you are absolutely sure it will be initialized
   private currentMarker: L.Marker | null = null;
   private circle: L.Circle | null = null;
 
-  @Output() locationSelected = new EventEmitter<{ lat: number; lng: number }>();
+  @Output() departureSelected = new EventEmitter<{ lat: number; lng: number }>();
+  @Output() destinationSelected = new EventEmitter<{ lat: number; lng: number }>();
 
   ngOnInit(): void {}
 
@@ -42,7 +43,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         L.marker(e.latlng).addTo(this.map)
           .bindPopup(`You are within ${radius.toFixed(1)} meters from this point`).openPopup();
         this.circle=L.circle(e.latlng, radius).addTo(this.map);
-        this.locationSelected.emit({ lat: e.latlng.lat, lng: e.latlng.lng });
+        this.departureSelected.emit({ lat: e.latlng.lat, lng: e.latlng.lng });
     });
 
      this.map.on('locationerror', (error: L.ErrorEvent) => {
@@ -54,13 +55,16 @@ export class MapComponent implements OnInit, AfterViewInit {
   public enableUserPointing(): void {
     this.map.on('click', (e: L.LeafletMouseEvent) => {
       const latLng = e.latlng;
-      if (this.currentMarker) {
-        this.map.removeLayer(this.currentMarker);
-      }
-      this.currentMarker = L.marker(e.latlng).addTo(this.map)
-        .bindPopup(`You clicked at ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`)
-        .openPopup();
-      this.locationSelected.emit({ lat: latLng.lat, lng: latLng.lng });
+      this.point(latLng);
+      this.destinationSelected.emit({ lat: latLng.lat, lng: latLng.lng });
     });
+  }
+  public point(latlng:any):void{
+    if (this.currentMarker) {
+      this.map.removeLayer(this.currentMarker);
+    }
+    this.currentMarker = L.marker(latlng).addTo(this.map)
+      .bindPopup(`You clicked at ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`)
+      .openPopup();
   }
 }

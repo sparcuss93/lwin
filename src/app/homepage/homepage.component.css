@@ -31,4 +31,20 @@
     padding: 20px;
     border-top: 1px solid #ccc;
   }
-  
+ 
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    cursor: pointer;
+    padding: 10px;
+    background: white;
+    border: 1px solid #ccc;
+}
+
+li:hover {
+    background: #f0f0f0; /* Highlight on hover */
+}
