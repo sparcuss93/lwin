@@ -4,6 +4,7 @@ import { GeocodingService } from '../geocoding.service'; // Import the service
 import * as L from 'leaflet';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Locations } from '../location';
 
 
 @Component({
@@ -15,19 +16,20 @@ import { CommonModule } from '@angular/common';
 })
 export class HomepageComponent {
     @ViewChild(MapComponent) mapComponent!: MapComponent;
-    departurePoint: string = '';
-    destinationPoint: string = '';
+    departurePoint : Locations = new Locations("",0,0) ;
+    destinationPoint: Locations = new Locations("",0,0) ;
     destinationResults: any[] = []; 
     departureResults: any[] = [];
 
     constructor(private geocodingService: GeocodingService) {} // Inject the service
 
     onLocationFound(location: { lat: number; lng: number }) {
-        this.departurePoint = `${location.lat}, ${location.lng}`;
+        this.departurePoint.coord = location;
+        
     }
 
     onDestinationFound(location: { lat: number; lng: number }) {
-      this.destinationPoint = `${location.lat}, ${location.lng}`;
+      this.destinationPoint.coord = location;
     }
 
     searchDestination(query: string): void {
@@ -63,21 +65,23 @@ export class HomepageComponent {
               this.departureResults = []; 
           }
       );
-  }
+    }
 
     selectDestination(result: any): void {
         const { lat, lon, display_name } = result;
-        this.destinationPoint = display_name; // Update input with selected name
+        this.destinationPoint =new Locations(display_name,lat,lon);// Update input with selected name
         this.mapComponent.map.setView([lat, lon], 13); // Center the map
-        this.mapComponent.point([lat,lon]) ;// Add marker if needed
+        this.mapComponent.pointarr([lat,lon]) ;// Add marker if needed
         this.destinationResults = []; // Clear search results
     }
 
     selectDeparture(result: any): void {
-      const { lat, lon, display_name } = result;
-      this.departurePoint = display_name; 
-      this.mapComponent.map.setView([lat, lon], 13); 
-      this.mapComponent.point([lat,lon]) ;
-      this.departureResults = []; 
-  }
-}
+        const { lat, lon, display_name } = result;
+        this.departurePoint= new Locations(display_name,lat,lon);
+        this.mapComponent.map.setView([lat, lon], 13); 
+        this.mapComponent.pointdep({lat,lon});
+        this.departureResults = []; 
+    }
+
+    
+}   

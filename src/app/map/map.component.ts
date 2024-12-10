@@ -1,6 +1,9 @@
 import { Component, OnInit ,AfterViewInit,Output,EventEmitter} from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+
 
 @Component({
   selector: 'app-map',
@@ -11,8 +14,10 @@ import 'leaflet/dist/leaflet.css';
 })
 export class MapComponent implements OnInit, AfterViewInit {
   public map!: L.Map; // Use the ! assertion operator only if you are absolutely sure it will be initialized
-  private currentMarker: L.Marker | null = null;
-  private circle: L.Circle | null = null;
+  public depMarker: L.Marker | null = null;
+  public arrMarker: L.Marker | null = null;
+  public circle: L.Circle | null = null;
+  private routingControl: L.Routing.Control | null = null;
 
   @Output() departureSelected = new EventEmitter<{ lat: number; lng: number }>();
   @Output() destinationSelected = new EventEmitter<{ lat: number; lng: number }>();
@@ -40,8 +45,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         if (this.circle) {
           this.map.removeLayer(this.circle);
         }
-        L.marker(e.latlng).addTo(this.map)
-          .bindPopup(`You are within ${radius.toFixed(1)} meters from this point`).openPopup();
+        this.pointdep(e.latlng);
         this.circle=L.circle(e.latlng, radius).addTo(this.map);
         this.departureSelected.emit({ lat: e.latlng.lat, lng: e.latlng.lng });
     });
@@ -55,16 +59,42 @@ export class MapComponent implements OnInit, AfterViewInit {
   public enableUserPointing(): void {
     this.map.on('click', (e: L.LeafletMouseEvent) => {
       const latLng = e.latlng;
-      this.point(latLng);
+      this.pointarr(latLng);
       this.destinationSelected.emit({ lat: latLng.lat, lng: latLng.lng });
     });
   }
-  public point(latlng:any):void{
-    if (this.currentMarker) {
-      this.map.removeLayer(this.currentMarker);
+
+  public pointdep = (latlng: any): void => {
+    console.log('this in point:', this);
+    if (this.depMarker) {
+      this.map.removeLayer(this.depMarker);
     }
-    this.currentMarker = L.marker(latlng).addTo(this.map)
-      .bindPopup(`You clicked at ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`)
+    this.depMarker = L.marker(latlng).addTo(this.map)
       .openPopup();
+  };
+
+  public pointarr = (latlng: any): void => {
+    console.log('this in point:', this);
+    if (this.arrMarker) {
+      this.map.removeLayer(this.arrMarker);
+    }
+    this.arrMarker = L.marker(latlng).addTo(this.map)
+      .openPopup();
+  };
+
+  public plotRoute(start:{ lat: number; lng: number}, end: { lat: number; lng: number}): void {
+    if (this.routingControl) {
+      this.map.removeControl(this.routingControl);
+    }
+    this.routingControl = L.Routing.control({
+      waypoints: [
+        L.latLng(start.lat, start.lng),
+        L.latLng(end.lat, end.lng)
+      ],
+      routeWhileDragging: true,
+      show: true
+    }).addTo(this.map);
   }
+
+  
 }
