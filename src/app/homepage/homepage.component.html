@@ -1,5 +1,6 @@
 <div class="container">
     <div class="search-bar">
+        <img src="/1x/logo.png" alt="Logo" class="logo">
         <input type="text" placeholder="Departure" id="departureInput" [(ngModel)]="departurePoint.name" (keyup)="searchDparture(departurePoint.name)">
         <button (click)="mapComponent.locateUser()">Locate Me</button>
         <ul *ngIf="departureResults.length > 0">
@@ -22,7 +23,15 @@
     </div>
 
     <div class="results">
-        <button (click)="mapComponent.plotRoute(departurePoint.coord ,destinationPoint.coord )">Show route</button>
-        <p>Results will go here</p>
+        <!--button (click)="mapComponent.plotRoute(departurePoint.coord ,destinationPoint.coord )">Show route</button-->
+        <button (click)="findRoute()">Show route</button>
+        <div *ngIf="routeData">
+            <h3>Route Instructions:</h3>
+            <ul>
+              <li *ngFor="let item of routeData.instructions">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
     </div>
 </div>

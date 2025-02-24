@@ -1,1 +1,69 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    background-color: rgb(16, 52, 60); /* Change to any color you like */
+    margin: 0; /* Removes default margin */
+    padding: 0; /* Removes default padding */
+  }
+
+.logo {
+    margin-right: 5%;
+    max-width: 150px; /* Adjust size of the logo */
+    height: 60px;     /* Keep aspect ratio */
+}
+
+.container {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    height: 100vh; /* Take up full viewport height */
+  }
+  
+  .search-bar {
+    background-image: url('/searchbar_background_mirror.png'); /* Path to your image */
+    background-size: cover; /* Ensures the image covers the entire div */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    padding: 20px;
+    display: flex;
+    justify-content: space-between; /* Distribute search bars evenly */
+  }
+  
+  .search-bar input {
+    padding: 10px;
+    width: 45%; /* Adjust width as needed */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+.map-container {
+  height: 400px; 
+  width: 98%; 
+  border: 1px solid #000000;
+  margin: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+  
+  .results {
+    background-image: url('/searchbar_background.png');
+    background-size: cover; /* Ensures the image covers the entire div */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    padding: 20px;
+    border-top: 1px solid #ccc;
+  }
+ 
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    cursor: pointer;
+    padding: 10px;
+    background: white;
+    border: 1px solid #ccc;
+}
+
+li:hover {
+    background: #f0f0f0; /* Highlight on hover */
+}

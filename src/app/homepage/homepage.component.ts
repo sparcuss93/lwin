@@ -1,10 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { MapComponent } from '../map/map.component';
 import { GeocodingService } from '../geocoding.service'; // Import the service
-import * as L from 'leaflet';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Locations } from '../location';
+import { RouteService } from '../route.service';
 
 
 @Component({
@@ -20,8 +20,12 @@ export class HomepageComponent {
     destinationPoint: Locations = new Locations("",0,0) ;
     destinationResults: any[] = []; 
     departureResults: any[] = [];
+    routeData: any;
 
-    constructor(private geocodingService: GeocodingService) {} // Inject the service
+    constructor(
+        private geocodingService: GeocodingService,
+        private routeService: RouteService
+    ) {} // Inject the service
 
     onLocationFound(location: { lat: number; lng: number }) {
         this.departurePoint.coord = location;
@@ -82,6 +86,21 @@ export class HomepageComponent {
         this.mapComponent.pointdep({lat,lon});
         this.departureResults = []; 
     }
+
+    findRoute(): void {
+        const start = { lat: this.departurePoint.coord.lat, lng: this.departurePoint.coord.lng };
+        const end = { lat: this.destinationPoint.coord.lat, lng: this.destinationPoint.coord.lng };
+    
+        this.routeService.getBestRoute(start, end).subscribe(
+          (data) => {
+            this.routeData = data;
+            console.log('Route data:', data);
+          },
+          (error) => {
+            console.error('Error fetching route:', error);
+          }
+        );
+      }
 
     
 }   
